@@ -4,6 +4,7 @@ import Vapor
 
 // configures your application
 public func configure(_ app: Application) throws {
+    
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
@@ -14,7 +15,13 @@ public func configure(_ app: Application) throws {
         password: Environment.get("DATABASE_PASSWORD") ?? "vapor_password",
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
-
+    
+    // Configure local server hostname and port when running Xcode
+    #if Xcode
+    app.http.server.configuration.hostname = "192.168.1.10"
+    app.http.server.configuration.port = 8080
+    #endif
+ 
     app.migrations.add(CreateTodo())
 
     // register routes
